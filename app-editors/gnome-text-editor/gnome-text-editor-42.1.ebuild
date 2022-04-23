@@ -19,7 +19,7 @@ IUSE="spell"
 DEPEND="
 	>=dev-libs/glib-2.69:2
 	>=gui-libs/gtk-4.6:4
-	>=gui-libs/gtksourceview-5.3.1:5
+	>=gui-libs/gtksourceview-5.4.1:5
 	gui-libs/libadwaita:1
 	dev-libs/libpcre
 	spell? (
@@ -35,10 +35,6 @@ BDEPEND="
 	>=sys-devel/gettext-0.21
 	virtual/pkgconfig
 "
-
-PATCHES=(
-	"${FILESDIR}"/${PN}-42.0-appdata-fix-appstream-validation.patch
-)
 
 src_configure() {
 	local emesonargs=(
