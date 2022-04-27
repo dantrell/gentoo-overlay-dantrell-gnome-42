@@ -1,6 +1,6 @@
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="7"
+EAPI="8"
 PYTHON_COMPAT=( python{3_8,3_9,3_10} )
 
 inherit gnome.org gnome2-utils meson python-any-r1 xdg
@@ -29,7 +29,7 @@ RDEPEND="
 	>=net-libs/rest-0.7.90:0.7[introspection]
 
 	app-crypt/libsecret[introspection]
-	dev-libs/libgweather:2=[introspection]
+	dev-libs/libgweather:4=[introspection]
 	media-libs/clutter-gtk:1.0[introspection]
 	media-libs/clutter:1.0[introspection]
 	net-libs/gnome-online-accounts:=[introspection]

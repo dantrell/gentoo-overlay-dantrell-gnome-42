@@ -5,7 +5,7 @@ EAPI="8"
 inherit gnome.org gnome2-utils meson xdg
 
 DESCRIPTION="The Eye of GNOME image viewer"
-HOMEPAGE="https://wiki.gnome.org/Apps/EyeOfGnome"
+HOMEPAGE="https://wiki.gnome.org/Apps/EyeOfGnome https://gitlab.gnome.org/GNOME/eog"
 
 LICENSE="GPL-2+"
 SLOT="1"
@@ -28,7 +28,7 @@ RDEPEND="
 	exif? ( >=media-libs/libexif-0.6.14 )
 	lcms? ( media-libs/lcms:2 )
 	xmp? ( media-libs/exempi:2 )
-	jpeg? ( virtual/jpeg:0 )
+	jpeg? ( media-libs/libjpeg-turbo:0= )
 	introspection? ( >=dev-libs/gobject-introspection-1.54:= )
 	svg? ( >=gnome-base/librsvg-2.44.0:2 )
 

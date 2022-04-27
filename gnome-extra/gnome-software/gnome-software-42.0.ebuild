@@ -1,8 +1,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="7"
+EAPI="8"
 
-inherit gnome.org gnome2-utils meson xdg
+inherit gnome.org gnome2-utils meson virtualx xdg
 
 DESCRIPTION="Gnome install & update software"
 HOMEPAGE="https://wiki.gnome.org/Apps/Software"
@@ -11,26 +11,25 @@ LICENSE="GPL-2+"
 SLOT="0"
 KEYWORDS="*"
 
-IUSE="flatpak +firmware gnome gtk-doc spell sysprof udev"
+IUSE="flatpak +firmware gnome gtk-doc sysprof udev"
 
-RESTRICT="test" # writes to and deletes files in /var/tmp/self-test/
+RESTRICT="test" # See TODO below
 
 RDEPEND="
 	>=dev-libs/appstream-0.14.0:0=
 	>=x11-libs/gdk-pixbuf-2.32.0:2
 	>=dev-libs/libxmlb-0.1.7:=
-	>=x11-libs/gtk+-3.22.4:3
-	>=dev-libs/glib-2.56:2
-	>=dev-libs/json-glib-1.2.0
+	>=gui-libs/gtk-4.6:4
+	>=dev-libs/glib-2.66.0:2
+	>=dev-libs/json-glib-1.6.0
 	>=net-libs/libsoup-2.52.0:2.4
-	>=gui-libs/libhandy-1.2.0:1=
+	>=gui-libs/libadwaita-1.0.1:1
 	sysprof? ( >=dev-util/sysprof-capture-3.40.1:4 )
 	gnome? ( >=gnome-base/gsettings-desktop-schemas-3.18.0 )
-	spell? ( app-text/gspell:= )
 	sys-auth/polkit
-	firmware? ( >=sys-apps/fwupd-1.0.3 )
+	firmware? ( >=sys-apps/fwupd-1.5.6 )
 	flatpak? (
-		>=sys-apps/flatpak-1.0.4
+		>=sys-apps/flatpak-1.9.1
 		dev-util/ostree
 	)
 	udev? ( dev-libs/libgudev )
@@ -49,7 +48,9 @@ BDEPEND="
 # test? ( dev-util/valgrind )
 
 src_prepare() {
-	xdg_src_prepare
+	default
+	xdg_environment_reset
+
 	sed -i -e '/install_data.*README\.md.*share\/doc\/gnome-software/d' meson.build || die
 	# We don't need language packs download support, and it fails tests in 3.34.2 for us (if they are enabled)
 	sed -i -e '/subdir.*fedora-langpacks/d' plugins/meson.build || die
@@ -60,8 +61,7 @@ src_prepare() {
 
 src_configure() {
 	local emesonargs=(
-		-Dtests=false #$(meson_use test tests)
-		$(meson_use spell gspell)
+		$(meson_use test tests)
 		$(meson_feature gnome gsettings_desktop_schemas) # Honoring of GNOME date format settings.
 		-Dman=true
 		-Dpackagekit=false
@@ -83,13 +83,14 @@ src_configure() {
 		-Dmogwai=false #TODO?
 		$(meson_feature sysprof)
 		-Dprofile=''
+		-Dsoup2=true
 	)
 	meson_src_configure
 }
 
-#src_test() {
-#	virtx meson_src_test
-#}
+src_test() {
+	virtx meson_src_test
+}
 
 pkg_postinst() {
 	xdg_pkg_postinst
