@@ -118,8 +118,6 @@ BDEPEND="
 "
 
 PATCHES=(
-	"${FILESDIR}"/${PN}-42.0-online-accounts-Fix-goa-helper-on-X11.patch
-
 	# Patches from gnome-40 branch on top of 40.0
 	# Makes some panels and dependencies optional
 	# https://bugzilla.gnome.org/686840, 697478, 700145

@@ -8,14 +8,14 @@ DESCRIPTION="Library with common API for various GNOME modules"
 HOMEPAGE="https://gitlab.gnome.org/GNOME/gnome-desktop/"
 
 LICENSE="GPL-2+ LGPL-2+ FDL-1.1+"
-SLOT="3/19" # subslot = libgnome-desktop-3 soname version
+SLOT="4/1" # subslot = libgnome-desktop-4 soname version
 KEYWORDS="*"
 
-IUSE="debug +introspection seccomp systemd udev"
+IUSE="debug gtk-doc +introspection seccomp systemd udev"
 
 COMMON_DEPEND="
 	>=x11-libs/gdk-pixbuf-2.36.5:2[introspection?]
-	>=x11-libs/gtk+-3.3.6:3[X,introspection?]
+	>=gui-libs/gtk-4.4.0:4[introspection?]
 	>=dev-libs/glib-2.53.0:2
 	>=gnome-base/gsettings-desktop-schemas-3.27.0[introspection?]
 	x11-misc/xkeyboard-config
@@ -33,19 +33,18 @@ DEPEND="${COMMON_DEPEND}
 "
 RDEPEND="${COMMON_DEPEND}
 	seccomp? ( sys-apps/bubblewrap )
+	!<gnome-base/gnome-desktop-${PV}:3
 "
 BDEPEND="
 	app-text/docbook-xml-dtd:4.1.2
 	dev-util/gdbus-codegen
+	gtk-doc? ( >=dev-util/gtk-doc-1.14 )
 	dev-util/itstool
 	>=sys-devel/gettext-0.19.8
-	x11-base/xorg-proto
 	virtual/pkgconfig
 "
-# Includes X11/Xatom.h in libgnome-desktop/gnome-bg.c which comes from xorg-proto
 
 PATCHES=(
-	"${FILESDIR}"/${PN}-42.0-meson-Fix-build_gtk4-option.patch
 	"${FILESDIR}"/${PN}-42.0-meson-Add-optionality-for-introspection.patch
 )
 
@@ -61,24 +60,15 @@ src_configure() {
 	local emesonargs=(
 		-Dgnome_distributor=Gentoo
 		-Ddate_in_gnome_version=true
-		-Ddesktop_docs=false
+		-Ddesktop_docs=true
 		$(meson_use debug debug_tools)
 		$(meson_use introspection)
 		$(meson_feature udev)
 		$(meson_feature systemd)
-		-Dgtk_doc=false
+		$(meson_use gtk-doc gtk_doc)
 		-Dinstalled_tests=false
-		-Dbuild_gtk4=false
-		-Dlegacy_library=true
+		-Dbuild_gtk4=true
+		-Dlegacy_library=false
 	)
 	meson_src_configure
-}
-
-src_install() {
-	meson_src_install
-
-	rm -r \
-		${ED}/usr/share/gnome/gnome-version.xml \
-		${ED}/usr/share/locale \
-		|| die
 }
