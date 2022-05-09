@@ -1,6 +1,6 @@
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="7"
+EAPI="8"
 
 inherit gnome.org readme.gentoo-r1 meson xdg
 
@@ -48,17 +48,20 @@ org.gnome.shell enabled-extensions gsettings key from the command
 line or a script."
 
 src_prepare() {
+	default
+	xdg_environment_reset
+
 	# Provided by gnome-base/gnome-shell-common
 	sed -e '/.*calendar-today.svg.*/d' \
 		-i data/meson.build || die "sed failed"
-
-	xdg_src_prepare
 }
 
 src_configure() {
-	meson_src_configure \
-		-Dextension_set=all \
+	local emesonargs=(
+		-Dextension_set=all
 		-Dclassic_mode=true
+	)
+	meson_src_configure
 }
 
 src_install() {

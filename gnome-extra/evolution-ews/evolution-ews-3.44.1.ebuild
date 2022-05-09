@@ -2,7 +2,7 @@
 
 EAPI="8"
 
-inherit cmake gnome2
+inherit cmake gnome2 optfeature
 
 DESCRIPTION="Evolution module for connecting to Microsoft Exchange Web Services"
 HOMEPAGE="https://wiki.gnome.org/Apps/Evolution"
@@ -64,4 +64,8 @@ src_test() {
 
 src_install() {
 	cmake_src_install
+}
+
+pkg_postinst() {
+	optfeature "oauth support" gnome-extra/evolution-data-server[oauth]
 }

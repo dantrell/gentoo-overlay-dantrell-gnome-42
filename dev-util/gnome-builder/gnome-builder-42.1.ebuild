@@ -1,6 +1,6 @@
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="7"
+EAPI="8"
 PYTHON_COMPAT=( python{3_8,3_9,3_10} )
 DISABLE_AUTOFORMATTING=1
 FORCE_PRINT_ELOG=1
@@ -8,15 +8,19 @@ FORCE_PRINT_ELOG=1
 inherit gnome.org gnome2-utils llvm meson optfeature python-single-r1 readme.gentoo-r1 virtualx xdg
 
 DESCRIPTION="An IDE for writing GNOME-based software"
-HOMEPAGE="https://wiki.gnome.org/Apps/Builder"
+HOMEPAGE="https://wiki.gnome.org/Apps/Builder https://gitlab.gnome.org/GNOME/gnome-builder"
 
 # FIXME: Review licenses at some point
 LICENSE="GPL-3+ GPL-2+ LGPL-3+ LGPL-2+ MIT CC-BY-SA-3.0 CC0-1.0"
 SLOT="0"
 KEYWORDS="*"
 
-IUSE="clang +devhelp doc +git +glade gtk-doc spell sysprof test"
-REQUIRED_USE="${PYTHON_REQUIRED_USE}"
+IUSE="clang devhelp doc flatpak +git +glade gtk-doc spell sysprof test webkit"
+REQUIRED_USE="
+	${PYTHON_REQUIRED_USE}
+	flatpak? ( git )
+	devhelp? ( webkit )
+"
 
 # When bumping, pay attention to all the included plugins/*/meson.build (and other) build files and the requirements within.
 # `grep -rI dependency * --include='meson.build'` can give a good initial idea for external deps and their double checking.
@@ -25,29 +29,36 @@ REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 # them have optional runtime dependencies, for which we try to at least notify the user via DOC_CONTENTS (but not all small
 # things); `grep -rI -e 'command-pattern.*=' -e 'push_arg'` can give a (spammy) idea, plus python imports in try/except.
 
-# FIXME: plugin_flatpak needs flatpak.pc >=0.8.0, ostree-1, libsoup-2.4.pc >=2.52.0 and git plugin enabled
 # Editorconfig needs old pcre, with vte migrating away, might want it optional or ported to pcre2?
 # An introspection USE flag of a dep is required if any introspection based language plugin wants to use it (grep for gi.repository). Last full check at 3.28.4
 
 # TODO: Handle llvm slots via llvm.eclass; see plugins/clang/meson.build
-# TODO: automagic libportal dep
-# TODO: automagic sysprof dep for tracing paths from toplevel meson.build
 RDEPEND="
 	>=dev-libs/libdazzle-3.37.0[introspection]
-	>=dev-libs/glib-2.67.4:2
-	>=x11-libs/gtk+-3.22.26:3[introspection]
+	>=dev-libs/glib-2.69.1:2
+	>=x11-libs/gtk+-3.24:3[introspection]
 	>=x11-libs/gtksourceview-4.0.0:4[introspection]
+	>=gui-libs/libhandy-1.5.0:1[introspection]
 	>=dev-libs/json-glib-1.2.0
-	>=dev-libs/jsonrpc-glib-3.19.91
+	>=dev-libs/jsonrpc-glib-3.41.0
 	>=x11-libs/pango-1.38.0
 	>=dev-libs/libpeas-1.22.0[python,${PYTHON_SINGLE_USEDEP}]
 	>=dev-libs/libportal-0.6[gtk3]
 	>=dev-libs/template-glib-3.28.0[introspection]
-	>=x11-libs/vte-0.40.2:2.91[introspection]
-	>=net-libs/webkit-gtk-2.26:4=[introspection]
-	>=app-text/cmark-0.29.0
+	>=x11-libs/vte-0.65.0:2.91[introspection]
 	>=dev-libs/libxml2-2.9.0
-	git? ( dev-libs/libgit2:=[ssh,threads]
+	webkit? ( >=net-libs/webkit-gtk-2.26:4=[introspection] )
+	sysprof? (
+		>=dev-util/sysprof-3.37.1:0/4[gtk]
+	)
+	>=app-text/cmark-0.29.0:0=
+	flatpak? (
+		dev-util/ostree
+		>=net-libs/libsoup-2.52.0:2.4
+		>=sys-apps/flatpak-1.10.2
+	)
+	git? (
+		dev-libs/libgit2:=[ssh,threads]
 		>=dev-libs/libgit2-glib-0.28.0.1[ssh]
 	)
 	dev-libs/libpcre:3
@@ -61,9 +72,10 @@ RDEPEND="
 	clang? ( sys-devel/clang:= )
 	devhelp? ( >=dev-util/devhelp-3.25.1:= )
 	glade? ( >=dev-util/glade-3.22.0:3.10= )
-	spell? ( >=app-text/gspell-1.8:0=
-		app-text/enchant:2 )
-	sysprof? ( >=dev-util/sysprof-3.37.1:0/4[gtk] )
+	spell? (
+		>=app-text/gspell-1.8:0=
+		app-text/enchant:2
+	)
 "
 DEPEND="${RDEPEND}"
 # TODO: runtime ctags path finding..
@@ -71,17 +83,21 @@ DEPEND="${RDEPEND}"
 # desktop-file-utils required for tests, but we have it in deptree for xdg update-desktop-database anyway, so be explicit and unconditional
 # appstream-glib needed for validation with appstream-util with FEATURES=test
 BDEPEND="
-	doc? ( $(python_gen_cond_dep '
-		dev-python/sphinx[${PYTHON_USEDEP}]
-		dev-python/sphinx_rtd_theme[${PYTHON_USEDEP}]
-	') )
-	gtk-doc? ( dev-util/gtk-doc
-		app-text/docbook-xml-dtd:4.3 )
+	doc? (
+		$(python_gen_cond_dep '
+			dev-python/sphinx[${PYTHON_USEDEP}]
+			dev-python/sphinx_rtd_theme[${PYTHON_USEDEP}]
+		')
+	)
+	gtk-doc? (
+		dev-util/gi-docgen
+		app-text/docbook-xml-dtd:4.3
+	)
 	test? (
 		dev-libs/appstream-glib
-		sys-apps/dbus )
+		sys-apps/dbus
+	)
 	dev-util/desktop-file-utils
-	>=dev-util/meson-0.49.2
 	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
 "
@@ -107,7 +123,7 @@ that are currently available with packages include:
 # FIXME: Package gnome-code-assistance and mention here, or maybe USE flag and default enable because it's rather important
 # eslint for additional diagnostics in JavaScript files (what package has this? At least something via NPM..)
 # jhbuild support
-# rust support via rust-analyzer (rls plugin now disabled by default); Go via go-langserver
+# rust support via rust-analyzer; Go via go-langserver
 # autotools stuff for autotools plugin; gtkmm/autoconf-archive for C++ template
 # gjs/gettext/mono/PHPize stuff, but most of these are probably installed for other reasons anyways, when needed inside IDE
 # stylelint for stylesheet (CSS and co) linting
@@ -127,23 +143,92 @@ src_configure() {
 		-Dtracing=false
 		-Dprofiling=false # not passing -pg to CFLAGS
 		-Dtcmalloc=false
+
+		-Dwith_safe_path=''
+
+		-Dgnome_sdk_version=master
+
 		-Dchannel=other
 
 		$(meson_use doc help)
 		$(meson_use gtk-doc docs)
 
 		-Dnetwork_tests=false
+
+		-Dctags_path=''
+
+		$(meson_feature webkit)
+
+		-Dplugin_autotools=true
+		-Dplugin_beautifier=true
+		-Dplugin_blueprint=true
+		-Dplugin_c_pack=true
+		-Dplugin_cargo=true
 		$(meson_use clang plugin_clang)
+		$(meson_use clang plugin_clangd)
+		$(meson_use clang plugin_clang_format)
+		-Dplugin_cmake=true
+		-Dplugin_codespell=true
+		-Dplugin_code_index=true
+		-Dplugin_color_picker=true
+		-Dplugin_copyright=true
+		-Dplugin_ctags=true
 		$(meson_use devhelp plugin_devhelp) # needs libportal
-		-Dplugin_deviced=false
+		-Dplugin_deviced=false # libdeviced not packaged?
+		-Dplugin_dspy=true
 		-Dplugin_editorconfig=true # needs libpcre
-		-Dplugin_flatpak=false
+		-Dplugin_eslint=true
+		-Dplugin_file_search=true
+		$(meson_use flatpak plugin_flatpak)
+		-Dplugin_gdb=true
+		-Dplugin_gdiagnose=true
+		-Dplugin_gettext=true
 		$(meson_use git plugin_git)
+		-Dplugin_gjs_symbols=true
 		$(meson_use glade plugin_glade)
-		-Dplugin_podman=false
+		-Dplugin_gnome_code_assistance=true
+		-Dplugin_go_langserv=true
+		-Dplugin_gradle=true
+		-Dplugin_grep=true
+		-Dplugin_gvls=true
+		-Dplugin_html_completion=true
+		-Dplugin_html_preview=true
+		-Dplugin_intelephense=true
+		-Dplugin_jedi_language_server=true
+		-Dplugin_jhbuild=true
+		-Dplugin_make=true
+		-Dplugin_maven=true
+		-Dplugin_meson=true
+		-Dplugin_modelines=true
+		-Dplugin_mono=true
+		-Dplugin_newcomers=true
+		-Dplugin_notification=true
+		-Dplugin_npm=true
+		-Dplugin_phpize=true
+		-Dplugin_podman=true
+		-Dplugin_python_pack=true
+		-Dplugin_qemu=true
+		-Dplugin_quick_highlight=true
+		-Dplugin_retab=true
+		-Dplugin_rls=true
+		-Dplugin_rstcheck=true
+		-Dplugin_rubocop=true
+		-Dplugin_rust_analyzer=false # rust-analyzer not packaged
+		-Dplugin_shellcmd=true
 		$(meson_use spell plugin_spellcheck)
+		-Dplugin_stylelint=true
 		$(meson_use sysprof plugin_sysprof)
-		-Dplugin_update_manager=false
+		-Dplugin_sysroot=true
+		-Dplugin_todo=true
+		-Dplugin_ts_language_server=true
+		-Dplugin_update_manager=true
+		-Dplugin_vala=true
+		-Dplugin_vagrant=true
+		-Dplugin_valgrind=true
+		-Dplugin_vls=true
+		-Dplugin_waf=true
+		-Dplugin_words=true
+		-Dplugin_xml_pack=true
 	)
 	meson_src_configure
 }
@@ -170,6 +255,13 @@ pkg_postinst() {
 	optfeature_header "Code beautifiers"
 	optfeature "Python" dev-python/autopep8
 	optfeature "C/C++/Java" dev-util/uncrustify
+	optfeature "HTML" app-text/htmltidy
+
+	optfeature_header "Language support"
+	optfeature "Rust's Cargo build system" virtual/rust
+	optfeature "CMake" dev-util/cmake
+	optfeature "Java Maven build system" dev-java/maven-bin
+	optfeature "Meson Build system" dev-util/meson
 }
 
 pkg_postrm() {
@@ -178,6 +270,5 @@ pkg_postrm() {
 }
 
 src_test() {
-	# FIXME: can't run meson_src_test together with virtx or dbus-run-session
 	virtx dbus-run-session meson test -C "${BUILD_DIR}"
 }

@@ -1,6 +1,6 @@
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="7"
+EAPI="8"
 PYTHON_COMPAT=( python{3_8,3_9,3_10} )
 
 inherit gnome.org gnome2-utils meson python-single-r1 virtualx xdg
@@ -142,9 +142,10 @@ PATCHES=(
 )
 
 src_prepare() {
-	xdg_src_prepare
+	default
+	xdg_environment_reset
 	# Hack in correct python shebang
-	sed -e "s:python\.path():'/usr/bin/env ${EPYTHON}':" -i src/meson.build || die
+	sed -e "s:python\.full_path():'/usr/bin/env ${EPYTHON}':" -i src/meson.build || die
 }
 
 src_configure() {
