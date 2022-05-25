@@ -79,6 +79,9 @@ DEPEND="
 "
 RDEPEND="${DEPEND}
 	gnome-extra/zenity
+
+	!<gui-libs/gtk-4.6.4:4
+	!<x11-libs/gtk+-3.24.34:3
 "
 DEPEND="${DEPEND}
 	x11-base/xorg-proto
@@ -173,6 +176,7 @@ src_test() {
 }
 
 pkg_postinst() {
+	use udev && udev_reload
 	xdg_pkg_postinst
 	gnome2_schemas_update
 }

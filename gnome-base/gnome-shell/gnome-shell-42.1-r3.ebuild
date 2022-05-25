@@ -114,7 +114,7 @@ RDEPEND="${DEPEND}
 		>=net-libs/telepathy-glib-0.19[introspection] )
 	media-fonts/cantarell
 
-	sys-apps/xdg-desktop-portal-gtk
+	|| ( sys-apps/xdg-desktop-portal-gnome <sys-apps/xdg-desktop-portal-gtk-1.14.0 )
 "
 # avoid circular dependency, see bug #546134
 PDEPEND="
@@ -139,6 +139,9 @@ PATCHES=(
 	"${FILESDIR}"/${PN}-42.0-optional-bluetooth.patch
 	# Change favorites defaults, bug #479918
 	"${FILESDIR}"/${PN}-40.0-defaults.patch
+
+	# Upstream backport, bug #844919
+	"${FILESDIR}"/${PN}-42.1-polkit-g_autoptr.patch
 )
 
 src_prepare() {
