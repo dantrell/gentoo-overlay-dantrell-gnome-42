@@ -17,7 +17,7 @@ LICENSE="
 SLOT="0"
 KEYWORDS="*"
 
-IUSE="accessibility audit bluetooth-sound branding elogind fprint ipv6 plymouth selinux systemd tcpd test wayland"
+IUSE="accessibility audit bluetooth-sound branding elogind fprint plymouth selinux systemd tcpd test wayland"
 REQUIRED_USE="^^ ( elogind systemd )"
 
 RESTRICT="!test? ( test )"
@@ -130,7 +130,7 @@ src_configure() {
 		-Ddefault-pam-config=exherbo
 		-Dgdm-xsession=true
 		-Dgroup=gdm
-		$(meson_use ipv6)
+		-Dipv6=true
 		$(meson_feature audit libaudit)
 		-Dlogind-provider=$(usex systemd systemd elogind)
 		-Dpam-mod-dir=$(getpam_mod_dir)
@@ -192,7 +192,7 @@ pkg_postinst() {
 
 	# bug #669146; gdm may crash if /var/lib/gdm subdirs are not owned by gdm:gdm
 	ret=0
-	ebegin "Fixing "${EROOT}"/var/lib/gdm ownership"
+	ebegin "Fixing ${EROOT}/var/lib/gdm ownership"
 	chown --no-dereference gdm:gdm "${EROOT}/var/lib/gdm" || ret=1
 	for d in "${EROOT}/var/lib/gdm/"{.cache,.color,.config,.dbus,.local}; do
 		[[ ! -e "${d}" ]] || chown --no-dereference -R gdm:gdm "${d}" || ret=1

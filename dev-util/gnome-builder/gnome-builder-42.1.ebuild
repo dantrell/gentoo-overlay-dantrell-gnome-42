@@ -43,7 +43,7 @@ RDEPEND="
 	>=dev-libs/jsonrpc-glib-3.41.0
 	>=x11-libs/pango-1.38.0
 	>=dev-libs/libpeas-1.22.0[python,${PYTHON_SINGLE_USEDEP}]
-	>=dev-libs/libportal-0.6[gtk3]
+	>=dev-libs/libportal-0.6:=[gtk3,introspection]
 	>=dev-libs/template-glib-3.28.0[introspection]
 	>=x11-libs/vte-0.65.0:2.91[introspection]
 	>=dev-libs/libxml2-2.9.0

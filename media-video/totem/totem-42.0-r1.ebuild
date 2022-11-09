@@ -7,7 +7,7 @@ PYTHON_REQ_USE="threads(+)"
 inherit gnome.org gnome2-utils meson virtualx xdg python-single-r1
 
 DESCRIPTION="Media player for GNOME"
-HOMEPAGE="https://wiki.gnome.org/Apps/Videos https://gitlab.gnome.org/GNOME/totem/"
+HOMEPAGE="https://wiki.gnome.org/Apps/Videos https://gitlab.gnome.org/GNOME/totem"
 
 LICENSE="GPL-2+ LGPL-2+"
 SLOT="0"
