@@ -1,8 +1,10 @@
 app-accessibility/at-spi2-core::gentoo
 app-accessibility/orca::gentoo
+app-crypt/seahorse::gentoo
 app-editors/gedit-plugins::gentoo
 app-editors/gedit::gentoo
 app-editors/ghex::gentoo
+app-editors/gnome-latex::gentoo
 app-editors/gnome-text-editor::gentoo
 app-misc/gnote::gentoo
 app-misc/tracker-miners::gentoo
@@ -52,6 +54,7 @@ gnome-extra/gnome-weather::gentoo
 gnome-extra/yelp-xsl::gentoo
 gnome-extra/yelp::gentoo
 gnome-extra/zenity::gentoo
+gui-apps/gnome-console::gentoo
 mail-client/evolution::gentoo
 media-gfx/eog-plugins::gentoo
 media-gfx/eog::gentoo
@@ -64,6 +67,7 @@ media-video/totem::gentoo
 net-irc/polari::gentoo
 net-libs/glib-networking::gentoo
 net-libs/gnome-online-accounts::gentoo
+net-misc/gnome-connections::gentoo
 net-wireless/gnome-bluetooth::gentoo
 sci-geosciences/gnome-maps::gentoo
 sys-apps/baobab::gentoo

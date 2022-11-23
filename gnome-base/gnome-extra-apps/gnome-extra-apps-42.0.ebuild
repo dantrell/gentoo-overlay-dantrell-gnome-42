@@ -9,7 +9,7 @@ LICENSE="metapackage"
 SLOT="3.0"
 KEYWORDS="*"
 
-IUSE="anjuta +bijiben boxes builder california +celluloid +dino empathy epiphany +evolution flashback +foliate +fonts +games geary gnote latexila multiwriter +recipes +share +shotwell simple-scan +todo +tracker +usage"
+IUSE="anjuta +bijiben boxes builder california +celluloid +connections +console +dino empathy epiphany +evolution flashback +foliate +fonts +games geary gnote latexila multiwriter +recipes +share +shotwell simple-scan +todo +tracker +usage"
 
 # Cantarell doesn't provide support for modern emojis so we pair it with Noto,.Symbola, and Unifont:
 #
@@ -53,6 +53,8 @@ RDEPEND="
 	builder? ( >=dev-util/gnome-builder-${PV} )
 	california? ( >=gnome-extra/california-0.4.0 )
 	celluloid? ( >=media-video/celluloid-0.20 )
+	connections? ( >=net-misc/gnome-connections-${PV} )
+	console? ( >=gui-apps/gnome-console-${PV} )
 	dino? ( >=net-im/dino-0.2.0 )
 	empathy? ( >=net-im/empathy-3.12.13 )
 	epiphany? ( >=www-client/epiphany-${PV} )
