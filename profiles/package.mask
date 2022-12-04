@@ -28,6 +28,7 @@ gnome-base/gnome-core-libs::gentoo
 gnome-base/gnome-desktop::gentoo
 gnome-base/gnome-extra-apps::gentoo
 gnome-base/gnome-flashback::gentoo
+gnome-base/gnome-keyring::gentoo
 gnome-base/gnome-light::gentoo
 gnome-base/gnome-panel::gentoo
 gnome-base/gnome-session::gentoo
@@ -51,6 +52,7 @@ gnome-extra/gnome-software::gentoo
 gnome-extra/gnome-system-monitor::gentoo
 gnome-extra/gnome-user-docs::gentoo
 gnome-extra/gnome-weather::gentoo
+gnome-extra/sushi::gentoo
 gnome-extra/yelp-xsl::gentoo
 gnome-extra/yelp::gentoo
 gnome-extra/zenity::gentoo
