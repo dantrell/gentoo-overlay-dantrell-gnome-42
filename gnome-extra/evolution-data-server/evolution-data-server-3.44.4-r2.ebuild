@@ -18,7 +18,7 @@ REQUIRED_USE="vala? ( introspection )"
 # Some tests fail due to missing locales.
 # Also, dbus tests are flaky, bugs #397975 #501834
 # It looks like a nightmare to disable those for now.
-RESTRICT="test !test? ( test )"
+RESTRICT="!test? ( test )"
 
 # gdata-0.17.7 soft required for new gdata_feed_get_next_page_token API to handle more than 100 google tasks
 # berkdb needed only for migrating old addressbook data from <3.13 versions, bug #519512
