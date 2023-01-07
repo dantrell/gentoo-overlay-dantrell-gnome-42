@@ -60,7 +60,7 @@ DEPEND="
 	networkmanager? (
 		>=net-libs/libnma-1.8.36[gtk4]
 		>=net-misc/networkmanager-1.24.0:=[modemmanager]
-		>=net-misc/modemmanager-0.7.990:=
+		>=net-misc/modemmanager-1.10.0:=
 	)
 	bluetooth? ( net-wireless/gnome-bluetooth:3= )
 	input_devices_wacom? ( >=dev-libs/libwacom-0.27:= )
