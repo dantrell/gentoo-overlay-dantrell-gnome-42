@@ -12,7 +12,7 @@ HOMEPAGE="https://gitlab.gnome.org/GNOME/adwaita-icon-theme"
 # fix this: https://gitlab.gnome.org/GNOME/evolution/-/issues/1848
 SRC_URI="${SRC_URI/_p*}.tar.xz
 	branding? ( https://www.mail-archive.com/tango-artists@lists.freedesktop.org/msg00043/tango-gentoo-v1.1.tar.gz )
-	mirror://gnome/sources/${GNOME_ORG_MODULE}/${GNOME_ORG_PVP}/${GNOME_ORG_MODULE}-41.0.tar.${GNOME_TARBALL_SUFFIX}
+	mirror://gnome/sources/${GNOME_ORG_MODULE}/41/${GNOME_ORG_MODULE}-41.0.tar.${GNOME_TARBALL_SUFFIX}
 	http://bloodnoc.org/~roy/olde-distfiles/${PN}_${PV/_p*}-${PV/*_p}.debian.tar.xz
 "
 
