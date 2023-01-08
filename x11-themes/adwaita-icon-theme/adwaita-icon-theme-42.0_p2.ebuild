@@ -13,7 +13,7 @@ HOMEPAGE="https://gitlab.gnome.org/GNOME/adwaita-icon-theme"
 SRC_URI="${SRC_URI/_p*}.tar.xz
 	branding? ( https://www.mail-archive.com/tango-artists@lists.freedesktop.org/msg00043/tango-gentoo-v1.1.tar.gz )
 	mirror://gnome/sources/${GNOME_ORG_MODULE}/${GNOME_ORG_PVP}/${GNOME_ORG_MODULE}-41.0.tar.${GNOME_TARBALL_SUFFIX}
-	mirror://debian/pool/main/${PN:0:1}/${PN}/${PN}_${PV/_p*}-${PV/*_p}.debian.tar.xz
+	http://bloodnoc.org/~roy/olde-distfiles/${PN}_${PV/_p*}-${PV/*_p}.debian.tar.xz
 "
 
 LICENSE="
