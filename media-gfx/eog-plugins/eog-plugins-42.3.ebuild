@@ -51,10 +51,6 @@ BDEPEND="
 	virtual/pkgconfig
 "
 
-PATCHES=(
-	"${FILESDIR}"/${PN}-42.2-build-Use-correct-variables.patch
-)
-
 pkg_setup() {
 	use python && python-single-r1_pkg_setup
 }

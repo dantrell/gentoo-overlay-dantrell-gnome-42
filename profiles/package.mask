@@ -74,6 +74,7 @@ net-wireless/gnome-bluetooth::gentoo
 sci-geosciences/gnome-maps::gentoo
 sys-apps/baobab::gentoo
 sys-apps/gnome-disk-utility::gentoo
+sys-apps/xdg-desktop-portal-gnome::gentoo
 www-client/epiphany::gentoo
 x11-libs/vte::gentoo
 x11-misc/gpaste::gentoo
