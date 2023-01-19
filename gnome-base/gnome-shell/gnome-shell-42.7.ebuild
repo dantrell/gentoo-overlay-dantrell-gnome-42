@@ -12,15 +12,13 @@ LICENSE="GPL-2+ LGPL-2+"
 SLOT="0"
 KEYWORDS="*"
 
-IUSE="+bluetooth +browser-extension elogind gtk-doc +ibus +networkmanager systemd telepathy test"
+IUSE="+bluetooth +browser-extension elogind gtk-doc +ibus +networkmanager screencast systemd telepathy test"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}
 	?? ( elogind systemd )"
 
 RESTRICT="!test? ( test )"
 
 # libXfixes-5.0 needed for pointer barriers and #include <X11/extensions/Xfixes.h>
-# FIXME:
-#  * gstreamer/pipewire support is currently automagic
 DEPEND="
 	>=gnome-extra/evolution-data-server-3.33.1:=
 	>=app-crypt/gcr-3.7.5:0=[introspection]
@@ -37,7 +35,13 @@ DEPEND="
 	bluetooth? ( net-wireless/gnome-bluetooth:3=[introspection] )
 	>=media-libs/gstreamer-0.11.92:1.0
 	media-libs/gst-plugins-base:1.0
-	>=media-video/pipewire-0.3.0:=
+	screencast? (
+		>=media-video/pipewire-0.3.0:=
+		media-libs/gstreamer[introspection]
+		media-libs/gst-plugins-base[introspection]
+		media-libs/gst-plugins-good
+		media-plugins/gst-plugins-vpx
+	)
 	networkmanager? (
 		>=net-misc/networkmanager-1.10.4:=[introspection]
 		net-libs/libnma[introspection]
