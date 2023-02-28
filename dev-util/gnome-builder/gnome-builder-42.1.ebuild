@@ -1,7 +1,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="8"
-PYTHON_COMPAT=( python{3_8,3_9,3_10,3_11} )
+PYTHON_COMPAT=( python{3_9,3_10,3_11} )
 DISABLE_AUTOFORMATTING=1
 FORCE_PRINT_ELOG=1
 
@@ -86,7 +86,7 @@ BDEPEND="
 	doc? (
 		$(python_gen_cond_dep '
 			dev-python/sphinx[${PYTHON_USEDEP}]
-			dev-python/sphinx_rtd_theme[${PYTHON_USEDEP}]
+			dev-python/sphinx-rtd-theme[${PYTHON_USEDEP}]
 		')
 	)
 	gtk-doc? (
