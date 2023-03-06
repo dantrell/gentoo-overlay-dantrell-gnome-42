@@ -4,14 +4,14 @@ EAPI="8"
 
 inherit gnome.org gnome2-utils meson virtualx xdg
 
-DESCRIPTION="Gnome install & update software"
+DESCRIPTION="GNOME utility for installing applications and updating systems"
 HOMEPAGE="https://wiki.gnome.org/Apps/Software https://gitlab.gnome.org/GNOME/gnome-software"
 
 LICENSE="GPL-2+"
 SLOT="0"
 KEYWORDS="*"
 
-IUSE="flatpak +firmware gnome gtk-doc sysprof udev"
+IUSE="flatpak firmware gnome gtk-doc sysprof udev"
 
 RESTRICT="test" # See TODO below
 

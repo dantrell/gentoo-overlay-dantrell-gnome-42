@@ -9,7 +9,7 @@ LICENSE="metapackage"
 SLOT="3.0"
 KEYWORDS="*"
 
-IUSE="+bluetooth +cdr cups"
+IUSE="+bluetooth +cdr cups +eog-plugins +gedit-plugins"
 
 RDEPEND="
 	>=gnome-base/gnome-core-libs-${PV}[cups?]
@@ -25,10 +25,12 @@ RDEPEND="
 	>=gnome-extra/evolution-data-server-3.44.0
 
 	>=app-crypt/seahorse-41.0
-	>=app-editors/gedit-41.0
+	>=app-editors/gedit-${PV}
+	gedit-plugins? ( >=app-editors/gedit-plugins-${PV} )
 	>=app-text/evince-${PV}
 	>=gnome-extra/gnome-contacts-${PV}
 	>=media-gfx/eog-${PV}
+	eog-plugins? ( >=media-gfx/eog-plugins-${PV} )
 	>=media-video/totem-${PV}
 	>=x11-terms/gnome-terminal-3.44.0
 
