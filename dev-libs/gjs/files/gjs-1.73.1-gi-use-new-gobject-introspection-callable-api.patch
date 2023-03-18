@@ -1,0 +1,154 @@
+From bcf9feeb96678ec698d76c4f7cb1dbc465972ad5 Mon Sep 17 00:00:00 2001
+From: Evan Welsh <contact@evanwelsh.com>
+Date: Sun, 6 Mar 2022 14:36:10 -0800
+Subject: [PATCH] gi: Use new GObject Introspection callable API
+
+This avoids misusing the closure pointer by creating a clear
+separation between the native closure pointer and the pointer
+to the libffi closure.
+
+Fixes #428
+---
+ gi/arg-cache.cpp |  2 +-
+ gi/function.cpp  | 39 ++++++++++++++++++++++++---------------
+ gi/function.h    |  9 ++++++++-
+ gi/object.cpp    |  5 ++---
+ 4 files changed, 35 insertions(+), 20 deletions(-)
+
+diff --git a/gi/arg-cache.cpp b/gi/arg-cache.cpp
+index 83c4ad4da..177f246f4 100644
+--- a/gi/arg-cache.cpp
++++ b/gi/arg-cache.cpp
+@@ -826,7 +826,7 @@ GJS_JSAPI_RETURN_CONVENTION
+ bool CallbackIn::in(JSContext* cx, GjsFunctionCallState* state, GIArgument* arg,
+                     JS::HandleValue value) {
+     GjsCallbackTrampoline* trampoline;
+-    ffi_closure* closure;
++    void* closure;
+ 
+     if (value.isNull() && m_nullable) {
+         closure = nullptr;
+diff --git a/gi/function.cpp b/gi/function.cpp
+index 716acc8ec..5c4fa4a28 100644
+--- a/gi/function.cpp
++++ b/gi/function.cpp
+@@ -640,8 +640,13 @@ GjsCallbackTrampoline::GjsCallbackTrampoline(
+ }
+ 
+ GjsCallbackTrampoline::~GjsCallbackTrampoline() {
+-    if (m_info && m_closure)
++    if (m_info && m_closure) {
++#if GI_CHECK_VERSION(1, 71, 0)
++        g_callable_info_destroy_closure(m_info, m_closure);
++#else
+         g_callable_info_free_closure(m_info, m_closure);
++#endif
++    }
+ }
+ 
+ void GjsCallbackTrampoline::mark_forever() {
+@@ -652,6 +657,23 @@ void GjsCallbackTrampoline::prepare_shutdown() {
+     s_forever_closure_list.clear();
+ }
+ 
++ffi_closure* GjsCallbackTrampoline::create_closure() {
++    auto callback = [](ffi_cif*, void* result, void** ffi_args, void* data) {
++        auto** args = reinterpret_cast<GIArgument**>(ffi_args);
++        g_assert(data && "Trampoline data is not set");
++        Gjs::Closure::Ptr trampoline(static_cast<GjsCallbackTrampoline*>(data),
++                                     GjsAutoTakeOwnership());
++
++        trampoline.as<GjsCallbackTrampoline>()->callback_closure(args, result);
++    };
++
++#if GI_CHECK_VERSION(1, 71, 0)
++    return g_callable_info_create_closure(m_info, &m_cif, callback, this);
++#else
++    return g_callable_info_prepare_closure(m_info, &m_cif, callback, this);
++#endif
++}
++
+ bool GjsCallbackTrampoline::initialize() {
+     g_assert(is_valid());
+     g_assert(!m_closure);
+@@ -720,20 +742,7 @@ bool GjsCallbackTrampoline::initialize() {
+         }
+     }
+ 
+-    m_closure = g_callable_info_prepare_closure(
+-        m_info, &m_cif,
+-        [](ffi_cif*, void* result, void** ffi_args, void* data) {
+-            auto** args = reinterpret_cast<GIArgument**>(ffi_args);
+-            g_assert(data && "Trampoline data is not set");
+-            Gjs::Closure::Ptr trampoline(
+-                static_cast<GjsCallbackTrampoline*>(data),
+-                GjsAutoTakeOwnership());
+-
+-            trampoline.as<GjsCallbackTrampoline>()->callback_closure(args,
+-                                                                     result);
+-        },
+-        this);
+-
++    m_closure = create_closure();
+     return true;
+ }
+ 
+diff --git a/gi/function.h b/gi/function.h
+index a6e9b82dd..799c14903 100644
+--- a/gi/function.h
++++ b/gi/function.h
+@@ -49,13 +49,20 @@ struct GjsCallbackTrampoline : public Gjs::Closure {
+ 
+     ~GjsCallbackTrampoline();
+ 
+-    constexpr ffi_closure* closure() const { return m_closure; }
++    void* closure() const {
++#if GI_CHECK_VERSION(1, 71, 0)
++        return g_callable_info_get_closure_native_address(m_info, m_closure);
++#else
++        return m_closure;
++#endif
++    }
+ 
+     void mark_forever();
+ 
+     static void prepare_shutdown();
+ 
+  private:
++    ffi_closure* create_closure();
+     GJS_JSAPI_RETURN_CONVENTION bool initialize();
+     GjsCallbackTrampoline(JSContext* cx, JS::HandleFunction function,
+                           GICallableInfo* callable_info, GIScopeType scope,
+diff --git a/gi/object.cpp b/gi/object.cpp
+index a53f9e525..6c85631c9 100644
+--- a/gi/object.cpp
++++ b/gi/object.cpp
+@@ -18,7 +18,6 @@
+ #include <utility>      // for move
+ #include <vector>
+ 
+-#include <ffi.h>
+ #include <girepository.h>
+ #include <glib-object.h>
+ #include <glib.h>
+@@ -3004,7 +3003,7 @@ bool ObjectPrototype::hook_up_vfunc_impl(JSContext* cx,
+ 
+     if (field_info) {
+         gint offset;
+-        gpointer method_ptr;
++        void* method_ptr;
+         GjsCallbackTrampoline *trampoline;
+ 
+         offset = g_field_info_get_offset(field_info);
+@@ -3032,7 +3031,7 @@ bool ObjectPrototype::hook_up_vfunc_impl(JSContext* cx,
+             trampoline, nullptr,
+             [](void*, GClosure* closure) { g_closure_unref(closure); });
+ 
+-        *reinterpret_cast<ffi_closure**>(method_ptr) = trampoline->closure();
++        *reinterpret_cast<void**>(method_ptr) = trampoline->closure();
+     }
+ 
+     return true;
+-- 
+GitLab
+

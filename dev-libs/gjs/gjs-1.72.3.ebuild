@@ -34,6 +34,16 @@ BDEPEND="
 	virtual/pkgconfig
 "
 
+src_prepare() {
+	default
+
+	# From GNOME:
+	# 	https://gitlab.gnome.org/GNOME/gjs/-/issues/428
+	# 	https://github.com/GNOME/gobject-introspection/commit/2a4dede7c2fdc3e6a6a5b063449ab3a8c58c11c0
+	# 	https://gitlab.gnome.org/GNOME/gjs/-/merge_requests/737
+	eapply -R "${FILESDIR}"/${PN}-1.73.1-gi-use-new-gobject-introspection-callable-api.patch
+}
+
 src_configure() {
 	append-cppflags -DG_DISABLE_CAST_CHECKS
 
