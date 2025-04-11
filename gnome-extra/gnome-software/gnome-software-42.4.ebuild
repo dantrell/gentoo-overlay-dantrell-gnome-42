@@ -45,7 +45,7 @@ BDEPEND="
 		dev-util/gtk-doc
 		app-text/docbook-xml-dtd:4.3 )
 "
-# test? ( dev-util/valgrind )
+# test? ( dev-debug/valgrind )
 
 src_prepare() {
 	default

@@ -37,7 +37,7 @@ RDEPEND="${DEPEND}
 "
 BDEPEND="
 	dev-util/gdbus-codegen
-	>=dev-util/gtk-doc-am-1.14
+	>=dev-build/gtk-doc-am-1.14
 	dev-util/itstool
 	>=sys-devel/gettext-0.19.6:0
 	virtual/pkgconfig

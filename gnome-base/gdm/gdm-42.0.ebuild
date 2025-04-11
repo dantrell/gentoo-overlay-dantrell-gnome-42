@@ -119,23 +119,23 @@ src_prepare() {
 	fi
 
 	# From GNOME (stop listening for events after UDEV is settled):
-	# 	https://gitlab.gnome.org/GNOME/gdm/commit/f0f527ff3815caa091be24168824f74853c0c050
-	# 	https://gitlab.gnome.org/GNOME/gdm/commit/307c683f00e1711973139837992ca0f6f55314a5
+	# 	https://gitlab.gnome.org/GNOME/gdm/-/commit/f0f527ff3815caa091be24168824f74853c0c050
+	# 	https://gitlab.gnome.org/GNOME/gdm/-/commit/307c683f00e1711973139837992ca0f6f55314a5
 	eapply "${FILESDIR}"/${PN}-43.0-local-display-factory-fix-type-of-signal-connection-id.patch
 	eapply "${FILESDIR}"/${PN}-43.0-local-display-factory-stop-listening-to-udev-events-when-necessary.patch
 
 	# From GNOME (cache remote users):
-	# 	https://gitlab.gnome.org/GNOME/gdm/commit/cf4664891ede9648d096569900e8b95abd91a633
+	# 	https://gitlab.gnome.org/GNOME/gdm/-/commit/cf4664891ede9648d096569900e8b95abd91a633
 	eapply "${FILESDIR}"/${PN}-43.0-session-settings-explicitly-cache-remote-users.patch
 
 	# From GNOME (fix supported session types):
-	# 	https://gitlab.gnome.org/GNOME/gdm/commit/6247ca134fb84a609915dfc627c8b3330a681cb5
+	# 	https://gitlab.gnome.org/GNOME/gdm/-/commit/6247ca134fb84a609915dfc627c8b3330a681cb5
 	eapply "${FILESDIR}"/${PN}-43.0-local-display-factory-fix-typo-in-supported-session-types.patch
 
 	# From GNOME (plug memory leaks):
-	# 	https://gitlab.gnome.org/GNOME/gdm/commit/a95d9169a1ce0f0c280da4152269551651ea902b
-	# 	https://gitlab.gnome.org/GNOME/gdm/commit/8edb5c4aef9bfa3a1d12a496c289644d330d3407
-	# 	https://gitlab.gnome.org/GNOME/gdm/commit/75ac44ec86af05bf01be3420cc733c3dfcb5cd18
+	# 	https://gitlab.gnome.org/GNOME/gdm/-/commit/a95d9169a1ce0f0c280da4152269551651ea902b
+	# 	https://gitlab.gnome.org/GNOME/gdm/-/commit/8edb5c4aef9bfa3a1d12a496c289644d330d3407
+	# 	https://gitlab.gnome.org/GNOME/gdm/-/commit/75ac44ec86af05bf01be3420cc733c3dfcb5cd18
 	eapply "${FILESDIR}"/${PN}-43.1-gdm-display-plug-a-memory-leak.patch
 	eapply "${FILESDIR}"/${PN}-43.1-gdm-session-worker-plug-a-memory-leak.patch
 	eapply "${FILESDIR}"/${PN}-43.1-gdm-local-display-factory-plug-a-memory-leak.patch

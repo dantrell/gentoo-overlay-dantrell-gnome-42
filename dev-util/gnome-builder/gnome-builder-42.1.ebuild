@@ -1,7 +1,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="8"
-PYTHON_COMPAT=( python{3_9,3_10,3_11} )
+PYTHON_COMPAT=( python{3_10,3_11,3_12,3_13} )
 DISABLE_AUTOFORMATTING=1
 FORCE_PRINT_ELOG=1
 
@@ -69,7 +69,7 @@ RDEPEND="
 		>=dev-python/pygobject-3.22.0:3[${PYTHON_USEDEP}]
 	')
 	${PYTHON_DEPS}
-	clang? ( sys-devel/clang:= )
+	clang? ( llvm-core/clang:= )
 	devhelp? ( >=dev-util/devhelp-3.25.1:= )
 	glade? ( >=dev-util/glade-3.22.0:3.10= )
 	spell? (
@@ -113,10 +113,10 @@ that are currently available with packages include:
   highlighting and symbol resolving support.
 * dev-python/jedi and dev-python/lxml for more accurate Python
   autocompletion support.
-* dev-util/valgrind for integration with valgrind.
-* dev-util/meson for integration with the Meson build system.
+* dev-debug/valgrind for integration with valgrind.
+* dev-build/meson for integration with the Meson build system.
 * dev-util/cargo for integration with the Rust Cargo build system.
-* dev-util/cmake for integration with the CMake build system.
+* dev-build/cmake for integration with the CMake build system.
 * net-libs/nodejs[npm] for integration with the NPM package system.
 '
 # FIXME: Package codespell and mention here
@@ -130,7 +130,7 @@ that are currently available with packages include:
 # gvls for vala language-server integration
 
 llvm_check_deps() {
-	has_version "sys-devel/clang:${LLVM_SLOT}"
+	has_version "llvm-core/clang:${LLVM_SLOT}"
 }
 
 pkg_setup() {
@@ -259,9 +259,9 @@ pkg_postinst() {
 
 	optfeature_header "Language support"
 	optfeature "Rust's Cargo build system" virtual/rust
-	optfeature "CMake" dev-util/cmake
+	optfeature "CMake" dev-build/cmake
 	optfeature "Java Maven build system" dev-java/maven-bin
-	optfeature "Meson Build system" dev-util/meson
+	optfeature "Meson Build system" dev-build/meson
 }
 
 pkg_postrm() {
